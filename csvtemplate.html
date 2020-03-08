@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to HTML</title>
+
+    <!-- jQuery 3.x slim minified -->
+    <script src="js/jquery-3.4.1.slim.min.js"></script>
+    <!-- Bootstrap 3 compiled and minified CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"> -->
+
+    <!-- Bootstrap 3 compiled and minified JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/tablefilter/tablefilter.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <caption>CSVtoHTML</caption>
+      <table id="csv_table" class="table table-striped table-bordered TF">
+        <thead>
+          <tr>
+            {%- for col in header %}
+            <th id="{{col}}">{{col}}</th>
+            {%- endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {%- for row in rows %}
+          <tr>
+            {%- for col in row %}
+            <td>{{col}}</td>
+            {%- endfor %}
+          </tr>
+          {%- endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+  <script language="javascript" type="text/javascript">
+      var tfConfig = {
+        base_path: 'js/tablefilter/',
+        // sort: true,
+        paging: {
+          length: 20,
+        },
+        paging_target_id: 'pageNav',
+        // custom_slc_options: {
+        //   cols:[1],
+        //   texts: [['0','1 - 500','500 - 5000','5000 - 10000','10000 - 25000','25000 - 50000','50000 - 80000']],
+        //   values: [
+        //     ['0','>0 && <=500','>500 && <=5000','>5000 && <=10000','>10000 && <=25000','>25000 && <=50000','>50000 && <=80000']
+        //   ],
+        //   sorts: [false]
+        // },
+        // col_0: "none",
+        // col_1: "select",
+        // display_all_text: "[ Clear ]",
+        // filters_row_index: 1,
+        // alternate_rows: true,
+        rows_counter: true,
+        rows_counter_text: "Rows: ",
+        btn_reset: true,
+        loader: true,
+        loader_html: '<img src="loader.gif" alt="" style="vertical-align:middle; margin:0 5px 0 5px">',
+        // loader_css_class: 'myLoader',
+        // status_bar: true,
+        // status_bar_target_id: 'statusMsg',
+      };
+      console.log("Initializing TableFilter...");
+      // var tf = setFilterGrid("kwresults", tfConfig);
+      var tf = new TableFilter('csv_table', tfConfig);
+      console.log("Done initializing TableFilter");
+    ( function() { tf.init(); } )();
+  </script>
+</html>
