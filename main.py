@@ -6,9 +6,13 @@ from CSVFormatter import CSVtoHTMLFormatter
 
 
 
-def eprint(*args):
-    """Built-in /print/ wrapper to print to STDERR."""
-    print(*args, file=sys.stderr)
+def log_error(*args):
+    print("ERROR:", *args, file=sys.stderr)
+
+
+
+def log_warning(*args):
+    print("WARNING:", *args, file=sys.stderr)
 
 
 
@@ -36,8 +40,10 @@ def parse_csv_line(header, row=None):
                 parsed_header[-1] += f":{header_col_stripped}"
             parsed_row[-1] += f":{row_col}"
         else:
-            parsed_header.append(header_col_stripped)
-            parsed_row.append(row_col)
+            # skip column if it's empty
+            if len(header_col_stripped) > 0:
+                parsed_header.append(header_col_stripped)
+                parsed_row.append(row_col)
 
         merge = False
         if len(header_col) > 0 and header_col[-1] == '>':
@@ -70,7 +76,7 @@ def main():
     delimiter = args.delimiter
     format = args.format
     if format not in SUPPORTED_FORMATS:
-        eprint("ERROR: Specified output format ({}) is not supported.".format(format))
+        log_error("Specified output format (`{}`) is not supported.".format(format))
         return 1
 
     csvformatter = SUPPORTED_FORMATS[format]
@@ -84,7 +90,10 @@ def main():
     parsed_rows = []
     csvreader = csv.reader(infile, delimiter=delimiter)
     # first row is the header
-    header = next(csvreader)
+    header = next(csvreader, None)
+    if not header:
+        log_warning("Empty file!")
+        return(1)
     parsed_header = parse_csv_line(header)["header"]
 
     for row in csvreader:
